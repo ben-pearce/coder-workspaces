@@ -1,0 +1,90 @@
+{
+  "name": "Coder Templates",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "username": "coder",
+      "userUid": "1000",
+      "userGid": "1000",
+      "installZsh": false,
+      "installOhMyZsh": false,
+      "installOhMyZshConfig": false,
+      "upgradePackages": false,
+      "sudoers": false,
+      "installSsl": false
+    },
+    "ghcr.io/devcontainers-extra/features/opencode:1": {},
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1": {}
+  },
+  "remoteUser": "coder",
+  "mounts": [
+    "source=${localEnv:HOME},target=/config,type=bind,consistency=cached"
+  ],
+  "remoteEnv": {
+    "HOME": "/config"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "opentofu.vscode-opentofu",
+        "timonwong.shellcheck",
+        "ms-azuretools.vscode-containers"
+      ],
+      "settings": {
+        // Mirrors local.vscode_settings in docker-scratchpad/locals.tf.
+        // Theme.
+        "workbench.colorTheme": "Dark Modern",
+
+        // Skip the welcome / walkthrough page on startup.
+        "workbench.startupEditor": "none",
+
+        // Disable all telemetry and experiments.
+        "telemetry.telemetryLevel": "off",
+        "telemetry.enableTelemetry": false,
+        "workbench.enableExperiments": false,
+        "redhat.telemetry.enabled": false,
+        "workbench.settings.showAISearchToggle": false,
+
+        // Disable the chat UI entirely.
+        "chat.disableAIFeatures": true,
+        "chat.enabled": false,
+        "chat.commandCenter.enabled": false,
+        "chat.agent.enabled": false,
+        "search.searchView.keywordSuggestions": false,
+
+        // Disable Copilot for every language.
+        "github.copilot.enable": {
+          "*": false,
+          "plaintext": false,
+          "markdown": false,
+          "scminput": false
+        },
+        "github.copilot.editor.enableAutoCompletions": false,
+        "github.copilot.editor.enableCodeActions": false,
+        "github.copilot.nextEditSuggestions.enabled": false,
+        "github.copilot.nextEditSuggestions.fixes": false,
+        "github.copilot.renameSuggestions.triggerAutomatically": false,
+        "github.copilot.chat.agent.autoFix": false,
+        "github.copilot.chat.claudeAgent.enabled": false,
+        "github.copilot.chat.codesearch.enabled": false,
+        "github.copilot.chat.newWorkspaceCreation.enabled": false,
+        "github.copilot.chat.reviewSelection.enabled": false,
+        "github.copilot.chat.setupTests.enabled": false,
+        "github.copilot.chat.useProjectTemplates": false,
+
+        // Format on save.
+        "editor.formatOnSave": true,
+
+        // Shellcheck lints shell scripts on the fly.
+        "shellcheck.enable": true,
+        "shellcheck.useWorkspacePath": true,
+
+        // OpenTofu / Terraform language settings.
+        "tofu.languageServer.enable": true
+      }
+    }
+  },
+  "postCreateCommand": "tofu version && shellcheck --version"
+}

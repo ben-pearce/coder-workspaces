@@ -1,0 +1,56 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":pinDigests",
+    "helpers:pinGitHubActionDigests",
+    ":semanticCommits"
+  ],
+  "timezone": "UTC",
+  "schedule": ["before 4am on monday"],
+  "prConcurrentLimit": 10,
+  "labels": ["dependencies"],
+  "configMigration": true,
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Keep terraform_version pinned in GitHub Actions workflows",
+      "fileMatch": ["^\\.github/workflows/[^/]+\\.ya?ml$"],
+      "matchStrings": [
+        "terraform_version:\\s*['\"]?(?<currentValue>\\d+\\.\\d+\\.\\d+)['\"]?"
+      ],
+      "datasourceTemplate": "hashicorp",
+      "depNameTemplate": "terraform",
+      "versioningTemplate": "hashicorp"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Keep GitHub Actions pinned to full commit SHAs",
+      "matchManagers": ["github-actions"],
+      "pinDigests": true,
+      "rangeStrategy": "pin"
+    },
+    {
+      "description": "Keep Terraform provider version constraints exact",
+      "matchManagers": ["terraform"],
+      "matchDepTypes": ["provider"],
+      "rangeStrategy": "pin"
+    },
+    {
+      "description": "Group minor and patch updates of GitHub Actions",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "GitHub Actions minor/patch updates"
+    },
+    {
+      "description": "Group Terraform CLI version bumps in workflows",
+      "matchDatasources": ["hashicorp"],
+      "matchDepNames": ["terraform"],
+      "groupName": "Terraform CLI"
+    }
+  ]
+}
